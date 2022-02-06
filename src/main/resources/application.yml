@@ -11,10 +11,14 @@ spring:
       hibernate:
         format_sql: true
         spring:
+  devtools:
+    restart:
+      enabled: false
+  profiles:
+    active: local
+logging.level:
+  org.hibernate.SQL: debug
 #  thymelef:
 #    prefix: classpath:templates/
 #    suffix: .html
 
-
-logging.level:
-         org.hibernate.SQL: debug

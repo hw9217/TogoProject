@@ -1,48 +1,67 @@
 package com.example.myTriple.Entity;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
+
 
 import javax.persistence.*;
+import java.awt.*;
+import java.time.LocalDateTime;
+import java.util.UUID;
 
 
-@Entity
+@Entity @NoArgsConstructor
 @Getter @Setter @ToString
 public class Member {
 
-    @Id
+    @Id @Column
+    @GeneratedValue
     private Long id;
+
     private String name;
+
     private String password;
+
     private String email;
+
+    private String auth;
+
+    private String phone;
+
     private int like;
 
+    private  String emailCheckToken;
 
-    public static void main(String[] args) {
-        EntityManagerFactory myjpa = Persistence.createEntityManagerFactory("myunit");
+    private boolean emailVerified;
 
-        //Manager를 통해 Entitymanager 받아오기
-        EntityManager entityManager = myjpa.createEntityManager();
-        //트랜잭션 시작
-        EntityTransaction transaction = entityManager.getTransaction();
-        transaction.begin();
+    private LocalDateTime joinedAt;
 
-        //member객체 생성 및 값 저장
 
-        Member member = new Member();
-        member.setId(1L);
-        member.setName("admin");
 
-        //persistence에 저장
-        entityManager.persist(member);
 
-        transaction.commit();
-        entityManager.close();
-        myjpa.close();
+    @Builder
+    private Member(String name, String  password, String email, int like, String auth, String phone) {
+        this.name = name;
+        this.password=password;
+        this.email = email;
+        this.like = like;
+        this.auth = auth;
+        this.phone = phone;
+
+    }
+    public boolean isValidToken(String token) {
+        return token.equals(this.emailCheckToken);
 
     }
 
+    public void completeSignup() {
+    setEmailVerified(true);
+    setJoinedAt(LocalDateTime.now());
+    }
+
+
+    public void generateEmailCheckToken() {
+        this.emailCheckToken = UUID.randomUUID().toString();
+    }
 }
 
 
